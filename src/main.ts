@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { ExceptionFilterService } from './services/exception-filter.service';
 import { ConfigService } from '@nestjs/config';
 import { ValidationError } from 'class-validator';
@@ -9,11 +9,17 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder().setTitle('Collab Board API').setDescription('Collab Board API description').setVersion('1.0').build();
+  const globalPrefix = (process.env.GLOBAL_PREFIX ?? 'api/v1').replace(/^\/+|\/+$/g, '');
+
+  const config = new DocumentBuilder().setTitle('Collab Board API').setDescription('Collab Board API description').setVersion('1.0').addBearerAuth().build();
+  app.setGlobalPrefix(globalPrefix, {
+    exclude: [
+      { path: 'robots.txt', method: RequestMethod.GET },
+      { path: 'file/access', method: RequestMethod.GET },
+    ],
+  });
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('doc', app, document);
-
-  app.setGlobalPrefix(process.env.GLOBAL_PREFIX ?? '/api/v1');
 
   /** Config validation pipes for class validation.*/
   app.useGlobalPipes(

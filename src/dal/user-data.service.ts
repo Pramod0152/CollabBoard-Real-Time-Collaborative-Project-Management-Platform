@@ -20,10 +20,6 @@ export class UserDataService {
   }
 
   async findAllUsers() {
-    return this.userModel.findAll({
-      where: {
-        id: '45',
-      },
-    });
+    return this.userModel.findAll();
   }
 }
