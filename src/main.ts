@@ -4,9 +4,14 @@ import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { ExceptionFilterService } from './services/exception-filter.service';
 import { ConfigService } from '@nestjs/config';
 import { ValidationError } from 'class-validator';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const config = new DocumentBuilder().setTitle('Collab Board API').setDescription('Collab Board API description').setVersion('1.0').build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('doc', app, document);
 
   app.setGlobalPrefix(process.env.GLOBAL_PREFIX ?? '/api/v1');
 
