@@ -5,11 +5,15 @@ import { ExceptionFilterService } from './services/exception-filter.service';
 import { ConfigService } from '@nestjs/config';
 import { ValidationError } from 'class-validator';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { LoggerService } from './common/logger/logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const globalPrefix = (process.env.GLOBAL_PREFIX ?? 'api/v1').replace(/^\/+|\/+$/g, '');
+
+  /** Inject logger instance */
+  const logger: LoggerService = app.get<LoggerService>(LoggerService);
 
   const config = new DocumentBuilder().setTitle('Collab Board API').setDescription('Collab Board API description').setVersion('1.0').addBearerAuth().build();
   app.setGlobalPrefix(globalPrefix, {
@@ -50,7 +54,10 @@ async function bootstrap() {
     origin: '*',
   });
 
-  app.useGlobalFilters(new ExceptionFilterService(app.get(ConfigService)));
+  app.useGlobalFilters(new ExceptionFilterService(app.get(ConfigService), logger));
+
   await app.listen(process.env.PORT ?? 3000);
+  logger.info(`🚀 🚀 🚀 Application is running on: ${await app.getUrl()} 🚀 🚀 🚀`);
+  logger.info(`🔗 Swagger is running on: ${await app.getUrl()}/doc`);
 }
 bootstrap();

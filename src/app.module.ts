@@ -9,9 +9,9 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
-import { ResponseModule } from './dto/response.module';
-import { UserModule } from './modules/frontend/user/user.module';
+import { ResponseModule } from './common/response/response.module';
 import { FrontendModule } from './modules/frontend/frontend.module';
+import { LoggerModule } from './common/logger/logger.module';
 
 @Module({
   imports: [
@@ -27,6 +27,7 @@ import { FrontendModule } from './modules/frontend/frontend.module';
       strategyInitializer: classes(),
     }),
     ResponseModule,
+    LoggerModule,
     DalModule,
     ServiceModule,
     FrontendModule,

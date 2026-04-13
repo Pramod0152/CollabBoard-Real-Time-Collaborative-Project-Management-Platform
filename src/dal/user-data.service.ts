@@ -22,4 +22,8 @@ export class UserDataService {
   async findAllUsers() {
     return this.userModel.findAll();
   }
+
+  async findUserById(id: string) {
+    return this.userModel.findByPk(id);
+  }
 }

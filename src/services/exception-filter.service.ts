@@ -3,10 +3,14 @@ import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { GenericResponseDto } from 'src/dto/generic-response.dto';
 import { MetaDto } from 'src/dto/meta.dto';
+import { LoggerService } from 'src/common/logger/logger';
 
 @Catch()
 export class ExceptionFilterService implements ExceptionFilter {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private logger: LoggerService,
+  ) {}
 
   catch(exception: Error, host: ArgumentsHost) {
     const context = host.switchToHttp();
@@ -55,10 +59,25 @@ export class ExceptionFilterService implements ExceptionFilter {
       }
     }
 
+    /** Log the error with application_id*/
+    const errorLog = this.getErrorLog(res);
+    this.logger.error(`👿👿 👿👿 ${errorLog}`);
+
     return response.status(res.meta.httpStatusCode).json(res);
   }
 
   private getStatusCode(exception: unknown): number {
     return exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+  }
+
+  private getErrorLog(errorResponse: GenericResponseDto<any>): string {
+    const message: string = errorResponse.message;
+    const { httpStatusCode, method, path, stack } = errorResponse.meta;
+
+    const errorLog = ` : 🔥 🔥  ${errorResponse.message}  🔥 🔥 \n 
+            RESPONSE CODE: ${httpStatusCode}  METHOD: ${method}   URL: ${path} \n
+            Stack: ${stack ? stack : message}
+        `;
+    return errorLog;
   }
 }
