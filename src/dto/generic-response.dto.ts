@@ -1,4 +1,7 @@
+import { MetaDto } from './meta.dto';
+
 export class GenericResponseDto<T = any> {
-  message: string;
-  data: T;
+  message?: string;
+  meta?: MetaDto;
+  data?: T;
 }
