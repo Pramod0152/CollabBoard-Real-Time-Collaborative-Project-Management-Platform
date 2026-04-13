@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationError } from 'class-validator';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { LoggerService } from './common/logger/logger';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -53,6 +54,8 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
   });
+
+  app.use(helmet());
 
   app.useGlobalFilters(new ExceptionFilterService(app.get(ConfigService), logger));
 

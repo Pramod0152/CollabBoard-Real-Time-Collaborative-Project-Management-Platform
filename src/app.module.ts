@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { DalModule } from './dal/dal.module';
 import { ServiceModule } from './bll/service.module';
@@ -12,6 +12,8 @@ import { classes } from '@automapper/classes';
 import { ResponseModule } from './common/response/response.module';
 import { FrontendModule } from './modules/frontend/frontend.module';
 import { LoggerModule } from './common/logger/logger.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -26,6 +28,17 @@ import { LoggerModule } from './common/logger/logger.module';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => [
+        {
+          name: 'global',
+          ttl: config.get('THROTTLE_TTL'),
+          limit: config.get('THROTTLE_LIMIT'),
+        },
+      ],
+    }),
     ResponseModule,
     LoggerModule,
     DalModule,
@@ -34,7 +47,13 @@ import { LoggerModule } from './common/logger/logger.module';
     JwtModule.register({}),
   ],
   controllers: [],
-  providers: [JwtStrategy],
+  providers: [
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
   exports: [JwtModule, JwtStrategy],
 })
 export class AppModule {}
