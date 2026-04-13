@@ -10,6 +10,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { ResponseModule } from './dto/response.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { classes } from '@automapper/classes';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    ResponseModule,
     DalModule,
     ServiceModule,
     UserModule,
