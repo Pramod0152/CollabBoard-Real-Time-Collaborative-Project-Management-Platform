@@ -8,6 +8,8 @@ import { SequelizeConfigService } from './services/sequelize-config.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
 
 @Module({
   imports: [
@@ -18,6 +20,9 @@ import { JwtModule } from '@nestjs/jwt';
     PassportModule,
     SequelizeModule.forRootAsync({
       useClass: SequelizeConfigService,
+    }),
+    AutomapperModule.forRoot({
+      strategyInitializer: classes(),
     }),
     DalModule,
     ServiceModule,
