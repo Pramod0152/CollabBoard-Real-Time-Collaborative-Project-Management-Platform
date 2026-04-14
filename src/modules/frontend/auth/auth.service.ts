@@ -7,8 +7,8 @@ import { RegisterDto } from 'src/dto/user/register.dto';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { LoginDto } from 'src/dto/user/login.dto';
-import { ReadUserDto } from 'src/dto/user/read-user.dto';
 import { User } from 'src/dal/entities/user.entity';
+import { ReadMyUserDto } from 'src/dto/user/read-my-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -71,7 +71,7 @@ export class AuthService {
     return {
       access_token,
       refresh_token,
-      user: this.mapper.map(user, User, ReadUserDto),
+      user: this.mapper.map(user, User, ReadMyUserDto),
     };
   }
 }
