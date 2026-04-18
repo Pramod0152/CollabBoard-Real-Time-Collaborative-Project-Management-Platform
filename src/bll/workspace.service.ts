@@ -14,8 +14,10 @@ export class WorkspaceService {
   ) {}
 
   async createWorkspace(item: CreateWorkspaceDto, user_id: number) {
-    const workspace = await this.dataService.createWorkspace1(item, user_id);
-    return workspace;
+    await this.dataService.createWorkspace1(item, user_id);
+    return {
+      message: 'Workspace create successfully',
+    };
   }
 
   async getMyWorkspaces(user_id: number) {

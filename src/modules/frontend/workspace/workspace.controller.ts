@@ -20,8 +20,8 @@ export class WorkspaceController {
 
   @Post()
   async createWorkspace(@Body() item: CreateWorkspaceDto, @Req() req: any) {
-    const workspace = await this.workspaceService.createWorkspace(item, req.user.id);
-    return this.responseHandler.HandleResponse(workspace, 'Workspace created successfully');
+    const { message } = await this.workspaceService.createWorkspace(item, req.user.id);
+    return this.responseHandler.HandleResponse({}, message);
   }
 
   @Get()
