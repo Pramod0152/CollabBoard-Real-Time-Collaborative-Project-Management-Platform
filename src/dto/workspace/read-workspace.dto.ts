@@ -35,10 +35,6 @@ export class ReadWorkspaceDto {
   @AutoMap()
   updated_at: Date;
 
-  @ApiProperty()
-  @AutoMap()
-  deleted_at: Date;
-
   @ApiProperty({ type: ReadUserDto })
   @AutoMap(() => ReadUserDto)
   user: ReadUserDto;

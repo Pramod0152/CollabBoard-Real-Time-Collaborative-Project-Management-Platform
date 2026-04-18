@@ -10,7 +10,6 @@ export class ResponseHandlerService {
     const result: GenericResponseDto<any> = {
       message: message || 'Success',
       data: data || {},
-      meta: null,
     };
 
     return result;

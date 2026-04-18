@@ -35,7 +35,6 @@ export class WorkspaceInvitation extends Model {
 
   @Column
   @AutoMap()
-  @Unique
   token: string;
 
   @Column
